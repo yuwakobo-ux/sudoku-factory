@@ -9,22 +9,22 @@
   --accent-strong: #245b54;
   --soft: #dceee9;
 
-  /* Ver.0.3 color roles: block < row/column < same number < selected < wrong. */
+  /* Ver.0.4 color roles: block < row/column < same number < selected < wrong. */
   --cell-normal: #fffdf7;
-  --cell-fixed: #eef1ef;
-  --cell-block: #eef4ee;
-  --cell-line: #e4f1ff;
-  --cell-same: #fff2a8;
-  --cell-selected: #2e756d;
-  --cell-wrong: #ffd0cc;
-  --cell-wrong-text: #851f17;
-  --cell-user-text: #176b87;
-  --cell-fixed-text: #111817;
+  --cell-fixed: #ecefec;
+  --cell-block: #ddefdd;
+  --cell-line: #cfe7ff;
+  --cell-same: #ffe476;
+  --cell-selected: #176a62;
+  --cell-wrong: #ff8f85;
+  --cell-wrong-text: #7c120d;
+  --cell-user-text: #0a6f97;
+  --cell-fixed-text: #050706;
 
-  --pad-active: #ffd84d;
+  --pad-active: #ffcf24;
   --pad-active-text: #17201f;
-  --pad-complete: #e8ece9;
-  --pad-complete-text: #68716e;
+  --pad-complete: #d9dfdc;
+  --pad-complete-text: #59615e;
 }
 
 * {
@@ -181,6 +181,7 @@ select {
   font-size: clamp(1.05rem, 6.15vw, 1.95rem);
   font-weight: 780;
   line-height: 1;
+  transition: background-color 120ms ease, color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
   user-select: none;
 }
 
@@ -202,7 +203,7 @@ select {
 .cell.fixed {
   color: var(--cell-fixed-text);
   background: var(--cell-fixed);
-  font-weight: 900;
+  font-weight: 950;
 }
 
 .cell.block-peer {
@@ -215,6 +216,7 @@ select {
 
 .cell.same-number {
   background: var(--cell-same);
+  box-shadow: inset 0 0 0 2px #e0a400;
 }
 
 .cell.selected {
@@ -222,20 +224,28 @@ select {
   z-index: 1;
   color: #fff;
   background: var(--cell-selected);
-  outline: 4px solid #123d38;
-  outline-offset: -5px;
+  outline: 5px solid #062f2b;
+  outline-offset: -6px;
+  transform: scale(1.045);
+  box-shadow: 0 0 0 3px rgba(6, 47, 43, 0.34), 0 4px 12px rgba(6, 47, 43, 0.38);
 }
 
 .cell.wrong {
   color: var(--cell-wrong-text);
   background: var(--cell-wrong);
-  box-shadow: inset 0 0 0 3px #c8342a;
+  font-weight: 900;
+  box-shadow: inset 0 0 0 4px #b3130b;
 }
 
 .cell.wrong.selected {
   color: #fff;
-  background: #c8342a;
-  outline-color: #7b1812;
+  background: #b3130b;
+  outline-color: #5f0804;
+  box-shadow: 0 0 0 3px rgba(95, 8, 4, 0.36), 0 4px 12px rgba(95, 8, 4, 0.38);
+}
+
+.cell.revealed {
+  animation: hint-pop 220ms ease-out;
 }
 
 .controls,
@@ -259,12 +269,14 @@ select {
   padding: 0;
   font-size: 1rem;
   font-weight: 850;
+  transition: background-color 120ms ease, color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
 }
 
 .number-pad button.active-number {
   color: var(--pad-active-text);
   background: var(--pad-active);
-  box-shadow: 0 2px 0 #c49713;
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 3px rgba(255, 207, 36, 0.42), 0 3px 0 #ad8200;
 }
 
 .number-pad button.completed-number {
@@ -276,7 +288,7 @@ select {
 .number-pad button.active-number.completed-number {
   color: var(--pad-active-text);
   background: var(--pad-active);
-  box-shadow: 0 2px 0 #c49713;
+  box-shadow: 0 0 0 3px rgba(255, 207, 36, 0.42), 0 3px 0 #ad8200;
 }
 
 .actions {
@@ -331,5 +343,15 @@ select {
 
   .actions button {
     min-height: 29px;
+  }
+}
+
+@keyframes hint-pop {
+  0% {
+    transform: scale(0.92);
+    box-shadow: inset 0 0 0 4px #ffcf24;
+  }
+  100% {
+    transform: scale(1);
   }
 }

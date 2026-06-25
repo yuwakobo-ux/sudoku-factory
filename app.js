@@ -18,9 +18,10 @@
   let board = currentPuzzle ? currentPuzzle.givens.split("") : [];
   let selectedIndex = -1;
   let wrongIndexes = new Set();
+  let revealedIndexes = new Set();
 
   function storageKey(puzzleId) {
-    return `sudoku-factory:v0.3:${puzzleId}`;
+    return `sudoku-factory:v0.4:${puzzleId}`;
   }
 
   function setMessage(text) {
@@ -28,10 +29,11 @@
   }
 
   function loadProgress(puzzle) {
-    const savedV3 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV4 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV3 = localStorage.getItem(`sudoku-factory:v0.3:${puzzle.id}`);
     const savedV2 = localStorage.getItem(`sudoku-factory:v0.2:${puzzle.id}`);
     const savedV1 = localStorage.getItem(`sudoku-factory:v0.1:${puzzle.id}`);
-    const saved = savedV3 || savedV2 || savedV1;
+    const saved = savedV4 || savedV3 || savedV2 || savedV1;
     if (saved && saved.length === 81) {
       board = saved.split("");
       for (let i = 0; i < 81; i += 1) {
@@ -116,6 +118,9 @@
         cell.setAttribute("aria-readonly", "true");
       }
       applyHighlightClasses(cell, index, value);
+      if (revealedIndexes.has(index)) {
+        cell.classList.add("revealed");
+      }
       if (wrongIndexes.has(index)) {
         cell.classList.add("wrong");
       }
@@ -123,6 +128,7 @@
       cell.addEventListener("click", () => selectCell(index));
       boardEl.appendChild(cell);
     });
+    revealedIndexes = new Set();
   }
 
   function renderNumberPad() {
@@ -219,7 +225,7 @@
     if (board.join("") === currentPuzzle.solution) {
       wrongIndexes = new Set();
       renderAll();
-      setMessage("クリア！Ver.0.3 完成");
+      setMessage("クリア！Ver.0.4 完成");
       return;
     }
     checkMistakes();
@@ -242,6 +248,7 @@
 
     const shuffled = emptyIndexes.sort(() => Math.random() - 0.5);
     const picked = shuffled.slice(0, count);
+    revealedIndexes = new Set(picked);
     picked.forEach((index) => {
       board[index] = currentPuzzle.solution[index];
       wrongIndexes.delete(index);
@@ -255,6 +262,7 @@
     board = currentPuzzle.givens.split("");
     selectedIndex = -1;
     wrongIndexes = new Set();
+    revealedIndexes = new Set();
     localStorage.removeItem(storageKey(currentPuzzle.id));
     renderAll();
     setMessage("リセットしました");
@@ -268,6 +276,7 @@
     currentPuzzle = nextPuzzle;
     selectedIndex = -1;
     wrongIndexes = new Set();
+    revealedIndexes = new Set();
     loadProgress(currentPuzzle);
     renderAll();
     setMessage(`${currentPuzzle.title} を開始`);
