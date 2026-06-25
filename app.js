@@ -17,9 +17,10 @@
   let currentPuzzle = puzzles[0];
   let board = currentPuzzle ? currentPuzzle.givens.split("") : [];
   let selectedIndex = -1;
+  let wrongIndexes = new Set();
 
   function storageKey(puzzleId) {
-    return `sudoku-factory:v0.1:${puzzleId}`;
+    return `sudoku-factory:v0.2:${puzzleId}`;
   }
 
   function setMessage(text) {
@@ -27,7 +28,9 @@
   }
 
   function loadProgress(puzzle) {
-    const saved = localStorage.getItem(storageKey(puzzle.id));
+    const savedV2 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV1 = localStorage.getItem(`sudoku-factory:v0.1:${puzzle.id}`);
+    const saved = savedV2 || savedV1;
     if (saved && saved.length === 81) {
       board = saved.split("");
       for (let i = 0; i < 81; i += 1) {
@@ -35,6 +38,7 @@
           board[i] = puzzle.givens[i];
         }
       }
+      saveProgress();
       return;
     }
     board = puzzle.givens.split("");
@@ -48,6 +52,35 @@
 
   function isFixed(index) {
     return currentPuzzle.givens[index] !== "0";
+  }
+
+  function sameBlock(a, b) {
+    const aRow = Math.floor(a / 9);
+    const aCol = a % 9;
+    const bRow = Math.floor(b / 9);
+    const bCol = b % 9;
+    return Math.floor(aRow / 3) === Math.floor(bRow / 3) &&
+      Math.floor(aCol / 3) === Math.floor(bCol / 3);
+  }
+
+  function applyHighlightClasses(cell, index, value) {
+    if (selectedIndex < 0) {
+      return;
+    }
+
+    const selectedValue = board[selectedIndex];
+    const sameRow = Math.floor(index / 9) === Math.floor(selectedIndex / 9);
+    const sameCol = index % 9 === selectedIndex % 9;
+
+    if (sameRow || sameCol || sameBlock(index, selectedIndex)) {
+      cell.classList.add("peer");
+    }
+    if (selectedValue !== "0" && value === selectedValue) {
+      cell.classList.add("same-number");
+    }
+    if (index === selectedIndex) {
+      cell.classList.add("selected");
+    }
   }
 
   function renderBoard() {
@@ -65,8 +98,9 @@
         cell.classList.add("fixed");
         cell.setAttribute("aria-readonly", "true");
       }
-      if (index === selectedIndex) {
-        cell.classList.add("selected");
+      applyHighlightClasses(cell, index, value);
+      if (wrongIndexes.has(index)) {
+        cell.classList.add("wrong");
       }
 
       cell.addEventListener("click", () => selectCell(index));
@@ -98,80 +132,65 @@
 
   function selectCell(index) {
     selectedIndex = index;
-    clearWrongMarks();
     renderBoard();
-    if (isFixed(index)) {
-      setMessage("このマスは最初から入っている数字なので変更できません。");
-    } else {
-      setMessage("数字ボタンで入力できます。");
-    }
+    setMessage(isFixed(index) ? "固定数字です" : "数字を入力できます");
   }
 
   function fillSelectedCell(value) {
     if (selectedIndex < 0) {
-      setMessage("先に空いているマスを選んでください。");
+      setMessage("先にマスを選んでください");
       return;
     }
     if (isFixed(selectedIndex)) {
-      setMessage("最初から入っている数字は変更できません。");
+      setMessage("固定数字は変更できません");
       return;
     }
     board[selectedIndex] = value;
+    wrongIndexes.delete(selectedIndex);
     saveProgress();
     renderBoard();
-    setMessage(`${value} を入れました。`);
+    setMessage(`${value} を入力`);
   }
 
   function clearSelectedCell() {
     if (selectedIndex < 0) {
-      setMessage("消したいマスを選んでください。");
+      setMessage("消すマスを選んでください");
       return;
     }
     if (isFixed(selectedIndex)) {
-      setMessage("最初から入っている数字は消せません。");
+      setMessage("固定数字は消せません");
       return;
     }
     board[selectedIndex] = "0";
+    wrongIndexes.delete(selectedIndex);
     saveProgress();
     renderBoard();
-    setMessage("選んだマスを空にしました。");
-  }
-
-  function clearWrongMarks() {
-    boardEl.querySelectorAll(".wrong").forEach((cell) => {
-      cell.classList.remove("wrong");
-    });
+    setMessage("消しました");
   }
 
   function checkMistakes() {
-    renderBoard();
-    let mistakes = 0;
+    wrongIndexes = new Set();
     board.forEach((value, index) => {
       if (value !== "0" && value !== currentPuzzle.solution[index]) {
-        const cell = boardEl.querySelector(`[data-index="${index}"]`);
-        cell.classList.add("wrong");
-        mistakes += 1;
+        wrongIndexes.add(index);
       }
     });
-
-    if (mistakes === 0) {
-      setMessage("今入っている数字にミスはありません。空きマスはミス扱いしません。");
-    } else {
-      setMessage(`${mistakes} 個のミスがあります。赤いマスを直してください。`);
-    }
+    renderBoard();
+    setMessage(wrongIndexes.size === 0 ? "ミスはありません" : `${wrongIndexes.size} 個のミス`);
   }
 
   function checkComplete() {
-    const current = board.join("");
-    if (current === currentPuzzle.solution) {
-      setMessage("クリアです！ナンプレ工場 Ver.0.1 完成です。");
+    if (board.join("") === currentPuzzle.solution) {
+      wrongIndexes = new Set();
+      renderBoard();
+      setMessage("クリア！Ver.0.2 完成");
       return;
     }
     checkMistakes();
     if (board.includes("0")) {
-      setMessage("まだ空いているマスがあります。もう少しです。");
-    } else {
-      setMessage("すべて埋まっていますが、どこかに間違いがあります。");
+      setMessage("まだ空きマスがあります");
+    } else if (wrongIndexes.size > 0) {
+      setMessage("間違いがあります");
     }
   }
 
@@ -181,7 +200,7 @@
       .filter((index) => index >= 0);
 
     if (emptyIndexes.length === 0) {
-      setMessage("空いているマスがないのでヒントは使えません。");
+      setMessage("空きマスがありません");
       return;
     }
 
@@ -189,18 +208,20 @@
     const picked = shuffled.slice(0, count);
     picked.forEach((index) => {
       board[index] = currentPuzzle.solution[index];
+      wrongIndexes.delete(index);
     });
     saveProgress();
     renderBoard();
-    setMessage(`${picked.length} 個の正しい数字を入れました。`);
+    setMessage(`${picked.length} 個ヒント`);
   }
 
   function resetPuzzle() {
     board = currentPuzzle.givens.split("");
     selectedIndex = -1;
+    wrongIndexes = new Set();
     localStorage.removeItem(storageKey(currentPuzzle.id));
     renderBoard();
-    setMessage("この問題を最初からやり直します。");
+    setMessage("リセットしました");
   }
 
   function switchPuzzle(puzzleId) {
@@ -210,22 +231,23 @@
     }
     currentPuzzle = nextPuzzle;
     selectedIndex = -1;
+    wrongIndexes = new Set();
     loadProgress(currentPuzzle);
     renderBoard();
-    setMessage(`${currentPuzzle.title} を開きました。保存済みの続きがあれば復元します。`);
+    setMessage(`${currentPuzzle.title} を開始`);
   }
 
   function registerServiceWorker() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js").catch(() => {
-        setMessage("アプリは遊べますが、オフライン準備に失敗しました。");
+        setMessage("オフライン準備に失敗");
       });
     }
   }
 
   function boot() {
     if (puzzles.length === 0) {
-      setMessage("問題データが見つかりません。");
+      setMessage("問題データがありません");
       return;
     }
     renderPuzzleSelect();

@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "sudoku-factory-v0-1";
+const CACHE_NAME = "sudoku-factory-v0-2";
 const APP_FILES = [
   "./",
   "./index.html",
