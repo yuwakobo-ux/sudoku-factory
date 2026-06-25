@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OPEN ME FIRST - Sudoku Factory Ver.0.5</title>
+  <title>OPEN ME FIRST - Sudoku Factory Ver.0.6</title>
   <style>
     body {
       max-width: 760px;
@@ -18,7 +18,7 @@
       line-height: 1.2;
     }
     a {
-      color: #075f77;
+      color: #0057d8;
       font-weight: 700;
     }
     code {
@@ -27,7 +27,7 @@
       background: #e3ece8;
     }
     .box {
-      border: 2px solid #b8ddff;
+      border: 2px solid #9fd4ff;
       border-radius: 8px;
       padding: 12px 14px;
       background: #fff;
@@ -35,35 +35,44 @@
   </style>
 </head>
 <body>
-  <h1>Sudoku Factory / ナンプレ工場 Ver.0.5</h1>
+  <h1>Sudoku Factory / ナンプレ工場 Ver.0.6</h1>
   <div class="box">
-    <p>Ver.0.5は高コントラストの見た目 redesign です。機能追加ではなく、実機で変化が分かることを優先しました。</p>
+    <p>Ver.0.6はiPhone Safari/Chromeの盤面サイズ差と、実機で見えにくいハイライトを修正する版です。</p>
   </div>
 
-  <h2>Ver.0.5の変更点</h2>
-  <p>選択中のマスは強い青、同じ数字は黄色、行と列は水色、3x3ブロックは薄い緑、間違いは赤で表示します。色の役割をVer.0.4より大きく離しました。</p>
+  <h2>キャッシュ回避URL</h2>
+  <p>確認時はまず次の形式で開いてください。</p>
+  <p><code>https://yuwakobo-ux.github.io/sudoku-factory/?v=ver0.6</code></p>
 
-  <h2>レビュー確認リスト</h2>
-  <ol>
-    <li>選択中のマスははっきり目立ちますか？</li>
-    <li>同じ数字は明確に黄色で見えますか？</li>
-    <li>行・列と3x3ブロックは違う色に見えますか？</li>
-    <li>Ver.0.4と比べて明らかに違う見た目ですか？</li>
-  </ol>
+  <h2>色テストURL</h2>
+  <p>ハイライトをすぐ確認する場合は、次を開いてください。</p>
+  <p><code>https://yuwakobo-ux.github.io/sudoku-factory/?color-test=1</code></p>
 
-  <h2>スマートフォンで確認すること</h2>
-  <p>数字が入っているマスを選び、選択セル、同じ数字、行、列、ブロックが一瞬で分かるか確認してください。ミス確認では、赤いセルがすぐ見つかるか確認してください。</p>
+  <h2>iPhone Safariチェック</h2>
+  <ul>
+    <li>盤面が横幅いっぱい近くまで大きく表示されていますか？</li>
+    <li>盤面の左右に大きな余白がありませんか？</li>
+    <li>選択セルが強い青で明確に見えますか？</li>
+  </ul>
 
-  <h2>ローカルで開く方法</h2>
-  <p>同じフォルダの <code>index.html</code> をブラウザで開くと遊べます。PWAのオフライン機能まで確認する場合は、ローカルWebサーバーまたはGitHub Pagesから開いてください。</p>
+  <h2>iPhone Chromeチェック</h2>
+  <ul>
+    <li>Safariと比べて盤面サイズが大きく違っていませんか？</li>
+    <li>数字ボタンと操作ボタンが見える範囲に収まっていますか？</li>
+  </ul>
 
-  <h2>GitHub Pages URL</h2>
-  <p><a href="https://yuwakobo-ux.github.io/sudoku-factory/">https://yuwakobo-ux.github.io/sudoku-factory/</a></p>
+  <h2>ハイライト確認</h2>
+  <ul>
+    <li>同じ数字は明るい黄色で見えますか？</li>
+    <li>行・列は水色、3x3ブロックは薄い緑で違いが分かりますか？</li>
+    <li>ミスは赤系で一瞬で分かりますか？</li>
+    <li>固定数字は黒太字、入力数字は青で違いが分かりますか？</li>
+  </ul>
 
   <h2>既知の制限</h2>
-  <p>Ver.0.5 は固定問題3つのみです。メモ機能、候補数字、タイマー、問題生成、アカウント、広告、バックエンドは入れていません。小さい画面では凡例を非表示にします。</p>
+  <p>Ver.0.6 は固定問題3つのみです。メモ、タイマー、問題生成、広告、バックエンドはありません。小さい端末やブラウザツールバーの状態によっては、少しスクロールする場合があります。</p>
 
   <h2>次のおすすめタスク</h2>
-  <p>iPhoneでVer.0.4とVer.0.5のスクリーンショットを見比べ、視認性が十分変わったか確認するのがおすすめです。</p>
+  <p>同じiPhoneでSafariとChromeのスクリーンショットを撮り、盤面サイズと色の見え方を比較してください。</p>
 </body>
 </html>

@@ -3,27 +3,27 @@
   --muted: #55615e;
   --paper: #fbfaf6;
   --panel: #ffffff;
-  --line: #6f7f7a;
-  --heavy: #132927;
-  --accent: #075f77;
-  --accent-strong: #033d50;
-  --soft: #d9edf2;
+  --line: #3b4a55;
+  --heavy: #061624;
+  --accent: #0057d8;
+  --accent-strong: #003c96;
+  --soft: #d8ebff;
 
-  /* Ver.0.5 high-contrast roles: block < row/column < same number < selected < wrong. */
+  /* Ver.0.6 high-contrast roles: block < row/column < same number < selected < wrong. */
   --cell-normal: #fffefa;
-  --cell-fixed: #f0f1f0;
-  --cell-block: #caedc8;
-  --cell-line: #b8ddff;
-  --cell-same: #ffd928;
-  --cell-selected: #0077b6;
-  --cell-selected-border: #002b4d;
-  --cell-wrong: #ff5a5f;
-  --cell-wrong-border: #8f0000;
-  --cell-wrong-text: #610000;
-  --cell-user-text: #0057b8;
+  --cell-fixed: #f2f2f2;
+  --cell-block: #b8f0b0;
+  --cell-line: #9fd4ff;
+  --cell-same: #ffe100;
+  --cell-selected: #0057d8;
+  --cell-selected-border: #001b52;
+  --cell-wrong: #ff4b73;
+  --cell-wrong-border: #b00020;
+  --cell-wrong-text: #5e0011;
+  --cell-user-text: #004fc4;
   --cell-fixed-text: #000000;
 
-  --pad-active: #ffcc00;
+  --pad-active: #ffe100;
   --pad-active-text: #17201f;
   --pad-complete: #d1d6d3;
   --pad-complete-text: #424946;
@@ -39,6 +39,8 @@ body {
 }
 
 body {
+  min-height: 100svh;
+  min-height: 100dvh;
   margin: 0;
   color: var(--ink);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -78,13 +80,15 @@ button.danger {
 }
 
 .app-shell {
-  width: min(100%, 560px);
+  width: 100%;
+  max-width: 620px;
+  min-height: 100svh;
   min-height: 100dvh;
   display: grid;
   grid-template-rows: auto auto auto auto auto;
   gap: 5px;
   margin: 0 auto;
-  padding: max(6px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
+  padding: max(5px, env(safe-area-inset-top)) 6px max(7px, env(safe-area-inset-bottom));
 }
 
 .topbar {
@@ -158,13 +162,14 @@ select {
 .board-wrap {
   display: grid;
   place-items: center;
-  gap: 3px;
+  gap: 0;
   min-height: 0;
 }
 
 .board {
-  width: min(100%, calc(100dvh - 211px), 540px);
-  min-width: 292px;
+  width: min(96vw, 608px);
+  max-width: calc(100vw - 12px);
+  min-width: 0;
   aspect-ratio: 1;
   display: grid;
   grid-template-columns: repeat(9, 1fr);
@@ -178,10 +183,10 @@ select {
   place-items: center;
   min-width: 0;
   min-height: 0;
-  border: 1px solid var(--line);
+  border: 1.5px solid var(--line);
   color: var(--cell-user-text);
   background: var(--cell-normal);
-  font-size: clamp(1.05rem, 6.15vw, 1.95rem);
+  font-size: clamp(1.08rem, 6.45vw, 2.08rem);
   font-weight: 780;
   line-height: 1;
   transition: background-color 120ms ease, color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
@@ -211,18 +216,18 @@ select {
 
 /* block */
 .cell.block-peer {
-  background: var(--cell-block);
+  background: var(--cell-block) !important;
 }
 
 /* row column */
 .cell.line-peer {
-  background: var(--cell-line);
+  background: var(--cell-line) !important;
 }
 
 /* same number */
 .cell.same-number {
-  background: var(--cell-same);
-  box-shadow: inset 0 0 0 3px #b88100;
+  background: var(--cell-same) !important;
+  box-shadow: inset 0 0 0 3px #9c7100;
 }
 
 /* selected cell */
@@ -230,24 +235,24 @@ select {
   position: relative;
   z-index: 1;
   color: #fff;
-  background: var(--cell-selected);
-  outline: 6px solid var(--cell-selected-border);
-  outline-offset: -7px;
-  transform: scale(1.055);
-  box-shadow: 0 0 0 4px rgba(0, 43, 77, 0.45), 0 6px 16px rgba(0, 43, 77, 0.55);
+  background: var(--cell-selected) !important;
+  outline: 7px solid var(--cell-selected-border);
+  outline-offset: -8px;
+  transform: scale(1.06);
+  box-shadow: 0 0 0 4px rgba(0, 27, 82, 0.58), 0 7px 18px rgba(0, 27, 82, 0.62);
 }
 
 /* wrong */
 .cell.wrong {
   color: var(--cell-wrong-text);
-  background: var(--cell-wrong);
+  background: var(--cell-wrong) !important;
   font-weight: 900;
   box-shadow: inset 0 0 0 5px var(--cell-wrong-border);
 }
 
 .cell.wrong.selected {
   color: #fff;
-  background: var(--cell-wrong-border);
+  background: var(--cell-wrong-border) !important;
   outline-color: #4c0000;
   box-shadow: 0 0 0 4px rgba(76, 0, 0, 0.44), 0 6px 16px rgba(76, 0, 0, 0.55);
 }
@@ -263,8 +268,8 @@ select {
 }
 
 .legend {
-  width: min(100%, 540px);
-  display: grid;
+  width: min(96vw, 608px);
+  display: none;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   color: var(--muted);
@@ -303,7 +308,7 @@ select {
 }
 
 .controls {
-  grid-template-columns: minmax(0, 1fr) 48px;
+  grid-template-columns: minmax(0, 1fr) 46px;
 }
 
 .number-pad {
@@ -324,7 +329,7 @@ select {
   color: var(--pad-active-text);
   background: var(--pad-active);
   transform: translateY(-1px);
-  box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.55), 0 3px 0 #946c00;
+  box-shadow: 0 0 0 4px rgba(255, 225, 0, 0.68), 0 3px 0 #946c00;
 }
 
 .number-pad button.completed-number {
@@ -336,7 +341,7 @@ select {
 .number-pad button.active-number.completed-number {
   color: var(--pad-active-text);
   background: var(--pad-active);
-  box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.55), 0 3px 0 #946c00;
+  box-shadow: 0 0 0 4px rgba(255, 225, 0, 0.68), 0 3px 0 #946c00;
 }
 
 .actions {
@@ -358,8 +363,7 @@ select {
   }
 
   .board {
-    min-width: 0;
-    width: min(100%, calc(100dvh - 199px));
+    width: min(96vw, calc(100vw - 12px));
   }
 
   .cell {
@@ -382,7 +386,7 @@ select {
   }
 
   .board {
-    width: min(100%, calc(100dvh - 166px), 520px);
+    width: min(96vw, calc(100vw - 12px));
   }
 
   .legend {

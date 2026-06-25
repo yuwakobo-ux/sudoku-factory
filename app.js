@@ -13,6 +13,7 @@
   const hintTwoBtn = document.getElementById("hintTwo");
   const hintThreeBtn = document.getElementById("hintThree");
   const resetPuzzleBtn = document.getElementById("resetPuzzle");
+  const searchParams = new URLSearchParams(window.location.search);
 
   let currentPuzzle = puzzles[0];
   let board = currentPuzzle ? currentPuzzle.givens.split("") : [];
@@ -21,7 +22,7 @@
   let revealedIndexes = new Set();
 
   function storageKey(puzzleId) {
-    return `sudoku-factory:v0.5:${puzzleId}`;
+    return `sudoku-factory:v0.6:${puzzleId}`;
   }
 
   function setMessage(text) {
@@ -29,12 +30,13 @@
   }
 
   function loadProgress(puzzle) {
-    const savedV5 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV6 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV5 = localStorage.getItem(`sudoku-factory:v0.5:${puzzle.id}`);
     const savedV4 = localStorage.getItem(`sudoku-factory:v0.4:${puzzle.id}`);
     const savedV3 = localStorage.getItem(`sudoku-factory:v0.3:${puzzle.id}`);
     const savedV2 = localStorage.getItem(`sudoku-factory:v0.2:${puzzle.id}`);
     const savedV1 = localStorage.getItem(`sudoku-factory:v0.1:${puzzle.id}`);
-    const saved = savedV5 || savedV4 || savedV3 || savedV2 || savedV1;
+    const saved = savedV6 || savedV5 || savedV4 || savedV3 || savedV2 || savedV1;
     if (saved && saved.length === 81) {
       board = saved.split("");
       for (let i = 0; i < 81; i += 1) {
@@ -226,7 +228,7 @@
     if (board.join("") === currentPuzzle.solution) {
       wrongIndexes = new Set();
       renderAll();
-      setMessage("クリア！Ver.0.5 完成");
+      setMessage("クリア！Ver.0.6 完成");
       return;
     }
     checkMistakes();
@@ -283,6 +285,20 @@
     setMessage(`${currentPuzzle.title} を開始`);
   }
 
+  function enableColorTestMode() {
+    if (!searchParams.has("color-test")) {
+      return;
+    }
+    board = currentPuzzle.givens.split("");
+    selectedIndex = 0;
+    board[2] = currentPuzzle.solution[0];
+    board[10] = currentPuzzle.solution[0];
+    board[20] = currentPuzzle.solution[0];
+    board[40] = currentPuzzle.solution[40] === "9" ? "1" : "9";
+    wrongIndexes = new Set([40]);
+    setMessage("色テスト: 選択/同じ数字/関連/ミス");
+  }
+
   function registerServiceWorker() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js").catch(() => {
@@ -298,6 +314,7 @@
     }
     renderPuzzleSelect();
     loadProgress(currentPuzzle);
+    enableColorTestMode();
     renderAll();
 
     puzzleSelectEl.addEventListener("change", (event) => switchPuzzle(event.target.value));

@@ -1,27 +1,40 @@
 # Sudoku Factory
 
-Sudoku Factory / ナンプレ工場 Ver.0.5 is an ad-free, smartphone-friendly Sudoku PWA built with static HTML, CSS, and JavaScript.
+Sudoku Factory / ナンプレ工場 Ver.0.6 is an ad-free, smartphone-friendly Sudoku PWA built with static HTML, CSS, and JavaScript.
 
-## Ver.0.5 Notes
+## Ver.0.6 Notes
 
-Ver.0.5 is a high-contrast visual redesign. It does not add gameplay features; it makes the existing highlights obvious on a real smartphone screen.
+Ver.0.6 fixes real-device iPhone Safari/Chrome layout differences and makes the highlight states much more forceful. It does not add gameplay features.
+
+## Safari / Chrome Layout Fix
+
+- Board sizing is now width-first: `width: min(96vw, 608px)`.
+- The board no longer depends on `100dvh` for its main size, avoiding Safari toolbar-height shrinkage.
+- The app shell uses `100svh` and `100dvh` together for better mobile viewport behavior.
+- The legend is hidden by default so it cannot reduce board size.
+- Board remains square through `aspect-ratio: 1`.
 
 ## High-Contrast Highlight System
 
-- Selected cell: strong blue fill, thick dark border, visible outline, shadow, and slight scale.
-- Same number: clear yellow fill with an inner accent ring.
-- Row and column: light blue fill.
-- 3x3 block: light green fill.
-- Wrong cells: strong red/pink fill with dark red border and red text.
+Priority is enforced as:
+
+wrong > selected > same number > row/column > block > normal
+
+- Selected cell: strong blue background, white text, thick dark outline, shadow, and slight scale.
+- Same number: bright yellow background.
+- Row and column: obvious light blue background.
+- 3x3 block: obvious light green background.
+- Wrong cells: strong pink/red background, dark red border, red text.
 - Fixed givens: black, bold text.
-- User-entered numbers: clear blue text, visually different from fixed givens.
-- Compact legend: shows 選択中, 同じ数字, and 関連マス when screen height allows.
+- User-entered numbers: clear blue text.
 
-## Number Pad
+## Visual Test Mode
 
-- The number matching the selected cell is strongly highlighted in yellow.
-- Numbers that already appear 9 times are muted as completed.
-- Completed numbers remain tappable for usability.
+Open this URL to force a quick visual style check:
+
+https://yuwakobo-ux.github.io/sudoku-factory/?color-test=1
+
+Use it only for review. Normal gameplay does not show a debug control.
 
 ## Current Features
 
@@ -32,18 +45,6 @@ Ver.0.5 is a high-contrast visual redesign. It does not add gameplay features; i
 - Local progress saving per puzzle with localStorage
 - PWA basics with `manifest.webmanifest` and `service-worker.js`
 - No ads, no backend, no paid API, no external dependencies
-
-## File Structure
-
-- `index.html` - main app screen
-- `style.css` - compact smartphone layout and Ver.0.5 high-contrast highlight system
-- `app.js` - game interaction, saving, checks, hints, reset, highlights, number-pad feedback, service worker registration
-- `puzzles.js` - three fixed puzzles
-- `manifest.webmanifest` - PWA manifest
-- `service-worker.js` - simple offline cache
-- `verify-static.js` - local static verification script
-- `OPEN_ME_FIRST.html` - reviewer guide
-- `README.md` - project notes
 
 ## How To Verify
 
@@ -64,13 +65,12 @@ https://yuwakobo-ux.github.io/sudoku-factory/
 
 ## Known Limitations
 
-- Ver.0.5 still uses only three fixed puzzles.
+- Ver.0.6 still uses only three fixed puzzles.
 - There is no notes mode, timer, puzzle generator, account system, backend, or ads.
-- Hints reveal correct values immediately and do not track a score.
-- Very small phone screens hide the legend and may still need slight scrolling depending on browser toolbar height.
+- On very small phones, vertical scrolling may still happen depending on browser toolbar height.
 
 ## Roadmap
 
-- Compare Ver.0.5 screenshots against Ver.0.4 on a real iPhone.
-- Tune only color intensity if any state still feels unclear.
-- Add more curated puzzles later.
+- Compare Safari and Chrome screenshots on the same iPhone.
+- Use `?color-test=1` to confirm all visual states are unmistakable.
+- Tune spacing only if one-screen play still fails on a specific model.
