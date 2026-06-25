@@ -3,17 +3,28 @@
   --muted: #55615e;
   --paper: #fbfaf6;
   --panel: #ffffff;
-  --line: #93a09a;
+  --line: #8c9a95;
   --heavy: #203b37;
   --accent: #2e756d;
   --accent-strong: #245b54;
   --soft: #dceee9;
-  --peer: #eef7f3;
-  --same: #d5efe8;
-  --wrong: #f4aaa0;
-  --wrong-line: #b73a2f;
-  --fixed: #edf1ef;
-  --user: #fffdf7;
+
+  /* Ver.0.3 color roles: block < row/column < same number < selected < wrong. */
+  --cell-normal: #fffdf7;
+  --cell-fixed: #eef1ef;
+  --cell-block: #eef4ee;
+  --cell-line: #e4f1ff;
+  --cell-same: #fff2a8;
+  --cell-selected: #2e756d;
+  --cell-wrong: #ffd0cc;
+  --cell-wrong-text: #851f17;
+  --cell-user-text: #176b87;
+  --cell-fixed-text: #111817;
+
+  --pad-active: #ffd84d;
+  --pad-active-text: #17201f;
+  --pad-complete: #e8ece9;
+  --pad-complete-text: #68716e;
 }
 
 * {
@@ -165,8 +176,8 @@ select {
   min-width: 0;
   min-height: 0;
   border: 1px solid var(--line);
-  color: #1f6b85;
-  background: var(--user);
+  color: var(--cell-user-text);
+  background: var(--cell-normal);
   font-size: clamp(1.05rem, 6.15vw, 1.95rem);
   font-weight: 780;
   line-height: 1;
@@ -189,34 +200,42 @@ select {
 }
 
 .cell.fixed {
-  color: var(--ink);
-  background: var(--fixed);
+  color: var(--cell-fixed-text);
+  background: var(--cell-fixed);
   font-weight: 900;
 }
 
-.cell.peer {
-  background: var(--peer);
+.cell.block-peer {
+  background: var(--cell-block);
+}
+
+.cell.line-peer {
+  background: var(--cell-line);
 }
 
 .cell.same-number {
-  background: var(--same);
+  background: var(--cell-same);
 }
 
 .cell.selected {
   position: relative;
   z-index: 1;
-  outline: 4px solid var(--accent);
+  color: #fff;
+  background: var(--cell-selected);
+  outline: 4px solid #123d38;
   outline-offset: -5px;
-  background: #c6e9df;
 }
 
 .cell.wrong {
-  color: #781f19;
-  background: var(--wrong);
+  color: var(--cell-wrong-text);
+  background: var(--cell-wrong);
+  box-shadow: inset 0 0 0 3px #c8342a;
 }
 
 .cell.wrong.selected {
-  outline-color: var(--wrong-line);
+  color: #fff;
+  background: #c8342a;
+  outline-color: #7b1812;
 }
 
 .controls,
@@ -240,6 +259,24 @@ select {
   padding: 0;
   font-size: 1rem;
   font-weight: 850;
+}
+
+.number-pad button.active-number {
+  color: var(--pad-active-text);
+  background: var(--pad-active);
+  box-shadow: 0 2px 0 #c49713;
+}
+
+.number-pad button.completed-number {
+  color: var(--pad-complete-text);
+  background: var(--pad-complete);
+  box-shadow: 0 2px 0 #c6cec9;
+}
+
+.number-pad button.active-number.completed-number {
+  color: var(--pad-active-text);
+  background: var(--pad-active);
+  box-shadow: 0 2px 0 #c49713;
 }
 
 .actions {

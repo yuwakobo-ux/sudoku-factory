@@ -20,7 +20,7 @@
   let wrongIndexes = new Set();
 
   function storageKey(puzzleId) {
-    return `sudoku-factory:v0.2:${puzzleId}`;
+    return `sudoku-factory:v0.3:${puzzleId}`;
   }
 
   function setMessage(text) {
@@ -28,9 +28,10 @@
   }
 
   function loadProgress(puzzle) {
-    const savedV2 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV3 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV2 = localStorage.getItem(`sudoku-factory:v0.2:${puzzle.id}`);
     const savedV1 = localStorage.getItem(`sudoku-factory:v0.1:${puzzle.id}`);
-    const saved = savedV2 || savedV1;
+    const saved = savedV3 || savedV2 || savedV1;
     if (saved && saved.length === 81) {
       board = saved.split("");
       for (let i = 0; i < 81; i += 1) {
@@ -63,6 +64,19 @@
       Math.floor(aCol / 3) === Math.floor(bCol / 3);
   }
 
+  function numberCounts() {
+    const counts = {};
+    for (let number = 1; number <= 9; number += 1) {
+      counts[String(number)] = 0;
+    }
+    board.forEach((value) => {
+      if (counts[value] !== undefined) {
+        counts[value] += 1;
+      }
+    });
+    return counts;
+  }
+
   function applyHighlightClasses(cell, index, value) {
     if (selectedIndex < 0) {
       return;
@@ -72,8 +86,11 @@
     const sameRow = Math.floor(index / 9) === Math.floor(selectedIndex / 9);
     const sameCol = index % 9 === selectedIndex % 9;
 
-    if (sameRow || sameCol || sameBlock(index, selectedIndex)) {
-      cell.classList.add("peer");
+    if (sameBlock(index, selectedIndex)) {
+      cell.classList.add("block-peer");
+    }
+    if (sameRow || sameCol) {
+      cell.classList.add("line-peer");
     }
     if (selectedValue !== "0" && value === selectedValue) {
       cell.classList.add("same-number");
@@ -109,15 +126,34 @@
   }
 
   function renderNumberPad() {
+    const selectedValue = selectedIndex >= 0 ? board[selectedIndex] : "0";
+    const counts = numberCounts();
     numberPadEl.innerHTML = "";
+
     for (let number = 1; number <= 9; number += 1) {
+      const value = String(number);
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = String(number);
-      button.setAttribute("aria-label", `${number} を入力`);
-      button.addEventListener("click", () => fillSelectedCell(String(number)));
+      button.textContent = value;
+      button.setAttribute("aria-label", `${value} を入力`);
+
+      if (selectedValue === value) {
+        button.classList.add("active-number");
+        button.setAttribute("aria-current", "true");
+      }
+      if (counts[value] >= 9) {
+        button.classList.add("completed-number");
+        button.title = `${value} は9個入っています`;
+      }
+
+      button.addEventListener("click", () => fillSelectedCell(value));
       numberPadEl.appendChild(button);
     }
+  }
+
+  function renderAll() {
+    renderBoard();
+    renderNumberPad();
   }
 
   function renderPuzzleSelect() {
@@ -132,7 +168,7 @@
 
   function selectCell(index) {
     selectedIndex = index;
-    renderBoard();
+    renderAll();
     setMessage(isFixed(index) ? "固定数字です" : "数字を入力できます");
   }
 
@@ -148,7 +184,7 @@
     board[selectedIndex] = value;
     wrongIndexes.delete(selectedIndex);
     saveProgress();
-    renderBoard();
+    renderAll();
     setMessage(`${value} を入力`);
   }
 
@@ -164,7 +200,7 @@
     board[selectedIndex] = "0";
     wrongIndexes.delete(selectedIndex);
     saveProgress();
-    renderBoard();
+    renderAll();
     setMessage("消しました");
   }
 
@@ -175,15 +211,15 @@
         wrongIndexes.add(index);
       }
     });
-    renderBoard();
+    renderAll();
     setMessage(wrongIndexes.size === 0 ? "ミスはありません" : `${wrongIndexes.size} 個のミス`);
   }
 
   function checkComplete() {
     if (board.join("") === currentPuzzle.solution) {
       wrongIndexes = new Set();
-      renderBoard();
-      setMessage("クリア！Ver.0.2 完成");
+      renderAll();
+      setMessage("クリア！Ver.0.3 完成");
       return;
     }
     checkMistakes();
@@ -211,7 +247,7 @@
       wrongIndexes.delete(index);
     });
     saveProgress();
-    renderBoard();
+    renderAll();
     setMessage(`${picked.length} 個ヒント`);
   }
 
@@ -220,7 +256,7 @@
     selectedIndex = -1;
     wrongIndexes = new Set();
     localStorage.removeItem(storageKey(currentPuzzle.id));
-    renderBoard();
+    renderAll();
     setMessage("リセットしました");
   }
 
@@ -233,7 +269,7 @@
     selectedIndex = -1;
     wrongIndexes = new Set();
     loadProgress(currentPuzzle);
-    renderBoard();
+    renderAll();
     setMessage(`${currentPuzzle.title} を開始`);
   }
 
@@ -251,9 +287,8 @@
       return;
     }
     renderPuzzleSelect();
-    renderNumberPad();
     loadProgress(currentPuzzle);
-    renderBoard();
+    renderAll();
 
     puzzleSelectEl.addEventListener("change", (event) => switchPuzzle(event.target.value));
     clearCellBtn.addEventListener("click", clearSelectedCell);
