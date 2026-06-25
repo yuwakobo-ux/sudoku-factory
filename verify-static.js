@@ -83,11 +83,14 @@ function assertPuzzleData(puzzles) {
   if (!Array.isArray(puzzles)) {
     fail("SUDOKU_PUZZLES must be an array.");
   }
-  if (puzzles.length !== 3) {
-    fail(`Expected exactly 3 puzzles, found ${puzzles.length}.`);
+  if (puzzles.length !== 60) {
+    fail(`Expected exactly 60 puzzles, found ${puzzles.length}.`);
   }
 
   const ids = new Set();
+  const givensSet = new Set();
+  const puzzleSet = new Set();
+  const counts = { easy: 0, normal: 0, hard: 0 };
   for (const puzzle of puzzles) {
     for (const field of ["id", "title", "difficulty", "givens", "solution"]) {
       if (!puzzle[field]) {
@@ -103,6 +106,7 @@ function assertPuzzleData(puzzles) {
     if (!allowedDifficulties.has(puzzle.difficulty)) {
       fail(`Invalid difficulty for ${puzzle.id}: ${puzzle.difficulty}`);
     }
+    counts[puzzle.difficulty] += 1;
     if (!/^[0-9]{81}$/.test(puzzle.givens)) {
       fail(`Givens must be 81 digits for ${puzzle.id}.`);
     }
@@ -112,6 +116,15 @@ function assertPuzzleData(puzzles) {
     if (!isValidCompletedSudoku(puzzle.solution)) {
       fail(`Solution is not a valid completed Sudoku for ${puzzle.id}.`);
     }
+    if (givensSet.has(puzzle.givens)) {
+      fail(`Duplicate givens found for ${puzzle.id}.`);
+    }
+    givensSet.add(puzzle.givens);
+    const puzzleFingerprint = `${puzzle.givens}:${puzzle.solution}`;
+    if (puzzleSet.has(puzzleFingerprint)) {
+      fail(`Duplicate puzzle found for ${puzzle.id}.`);
+    }
+    puzzleSet.add(puzzleFingerprint);
 
     for (let index = 0; index < 81; index += 1) {
       const given = puzzle.givens[index];
@@ -120,8 +133,14 @@ function assertPuzzleData(puzzles) {
       }
     }
   }
+
+  for (const difficulty of allowedDifficulties) {
+    if (counts[difficulty] !== 20) {
+      fail(`Expected 20 ${difficulty} puzzles, found ${counts[difficulty]}.`);
+    }
+  }
 }
 
 assertRequiredFiles();
 assertPuzzleData(loadPuzzles());
-console.log("Static verification passed: required files and puzzle data are valid.");
+console.log("Static verification passed: 60 valid puzzles, unique ids, and 20 puzzles per difficulty.");

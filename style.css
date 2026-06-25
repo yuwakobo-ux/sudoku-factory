@@ -148,6 +148,101 @@ select {
   background: rgba(255, 255, 255, 0.82);
 }
 
+.home-panel {
+  display: grid;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid rgba(6, 22, 36, 0.14);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.progress-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 3px;
+  color: var(--ink);
+  font-size: 0.66rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.progress-summary span,
+.progress-summary strong {
+  overflow: hidden;
+  padding: 3px 2px;
+  border-radius: 5px;
+  background: #eef5ff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.home-actions button {
+  min-height: 28px;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.puzzle-list {
+  max-height: 78px;
+  overflow: auto;
+  display: grid;
+  gap: 4px;
+  overscroll-behavior: contain;
+}
+
+.puzzle-group {
+  display: grid;
+  grid-template-columns: 42px repeat(5, minmax(0, 1fr));
+  gap: 3px;
+  align-items: center;
+}
+
+.puzzle-group strong {
+  color: var(--muted);
+  font-size: 0.66rem;
+  line-height: 1;
+}
+
+.puzzle-chip {
+  min-height: 24px;
+  padding: 0 2px;
+  overflow: hidden;
+  border: 1px solid #bcc8c3;
+  color: var(--ink);
+  background: #f6f7f6;
+  box-shadow: none;
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.puzzle-chip.playing {
+  color: #001b52;
+  background: #ffe100;
+  border-color: #9c7100;
+}
+
+.puzzle-chip.cleared {
+  color: #fff;
+  background: #0a7a31;
+  border-color: #064e20;
+}
+
+.puzzle-chip.not_started {
+  color: #46504c;
+  background: #edf0ee;
+}
+
 .status-panel p {
   width: 100%;
   margin: 0;
@@ -373,6 +468,14 @@ select {
   .actions button {
     font-size: 0.72rem;
   }
+
+  .progress-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .puzzle-group {
+    grid-template-columns: 38px repeat(4, minmax(0, 1fr));
+  }
 }
 
 @media (max-height: 700px) {
@@ -383,6 +486,10 @@ select {
   .status-panel {
     min-height: 24px;
     padding-block: 2px;
+  }
+
+  .puzzle-list {
+    max-height: 52px;
   }
 
   .board {
