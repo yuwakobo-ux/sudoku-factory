@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0057d8">
-  <title>ナンプレ工場 Ver1.0</title>
+  <title>ナンプレ工場 Ver1.1</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -12,22 +12,24 @@
   <main class="app-shell">
     <header class="topbar">
       <div class="brand">
-        <p class="eyebrow">Sudoku Factory Ver1.0</p>
+        <p class="eyebrow">Sudoku Factory Ver1.1</p>
         <h1>ナンプレ工場</h1>
       </div>
-      <label class="selector">
-        <span>問題</span>
-        <select id="puzzleSelect" aria-label="問題を選ぶ"></select>
-      </label>
+      <div class="status-badge" id="selectedStatus">new</div>
     </header>
 
-    <section class="home-panel" aria-label="進捗">
+    <section class="home-panel" aria-label="進捗と問題選択">
       <div id="progressSummary" class="progress-summary"></div>
-      <div class="home-actions">
-        <button id="continuePuzzle" type="button">続き</button>
-        <button id="resetAllProgress" class="danger" type="button">全リセット</button>
+      <div class="pickers">
+        <label>
+          <span>Difficulty</span>
+          <select id="difficultySelect" aria-label="難易度を選ぶ"></select>
+        </label>
+        <label>
+          <span>Puzzle</span>
+          <select id="puzzleNumberSelect" aria-label="問題番号を選ぶ"></select>
+        </label>
       </div>
-      <div id="puzzleList" class="puzzle-list" aria-label="問題一覧"></div>
     </section>
 
     <section class="status-panel" aria-live="polite">
@@ -43,13 +45,13 @@
       <button id="clearCell" class="secondary" type="button">消す</button>
     </section>
 
-    <section class="actions" aria-label="確認とヒント">
+    <section class="actions" aria-label="操作">
       <button id="checkMistakes" type="button">ミス確認</button>
       <button id="checkComplete" type="button">完成確認</button>
-      <button id="hintOne" type="button">ヒント1</button>
-      <button id="hintTwo" type="button">ヒント2</button>
-      <button id="hintThree" type="button">ヒント3</button>
-      <button id="resetPuzzle" class="danger" type="button">リセット</button>
+      <button id="hintOne" type="button">ヒント</button>
+      <button id="resetPuzzle" class="danger" type="button">現在リセット</button>
+      <button id="resetAllProgress" class="danger" type="button">全リセット</button>
+      <button id="continuePuzzle" type="button">続きから</button>
     </section>
   </main>
 

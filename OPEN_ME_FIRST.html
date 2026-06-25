@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OPEN ME FIRST - Sudoku Factory Ver1.0</title>
+  <title>OPEN ME FIRST - Sudoku Factory Ver1.1</title>
   <style>
     body {
       max-width: 760px;
@@ -13,9 +13,6 @@
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.65;
       background: #fbfaf6;
-    }
-    h1, h2 {
-      line-height: 1.2;
     }
     a {
       color: #0057d8;
@@ -29,26 +26,30 @@
   </style>
 </head>
 <body>
-  <h1>Sudoku Factory / ナンプレ工場 Ver1.0</h1>
-
-  <h2>作成内容</h2>
-  <p>Ver1.0 Complete Editionとして、Easy 20、Normal 20、Hard 20、合計60問に増やしました。新しいゲーム機能は追加せず、進捗管理と問題一覧を整えています。</p>
+  <h1>Sudoku Factory / ナンプレ工場 Ver1.1</h1>
 
   <h2>確認URL</h2>
   <p><a href="https://yuwakobo-ux.github.io/sudoku-factory/">https://yuwakobo-ux.github.io/sudoku-factory/</a></p>
-  <p>キャッシュが残る場合は <code>?v=ver1.0</code> を付けて開いてください。</p>
+  <p>キャッシュが残る場合は <code>?v=ver1.1</code> を付けて開いてください。</p>
+
+  <h2>変更点</h2>
+  <ul>
+    <li>Hint 2 と Hint 3 を削除しました。</li>
+    <li>ヒントは1つだけにしました。</li>
+    <li>Difficulty と Puzzle の2つの選択欄に分けました。</li>
+    <li>選択中の問題の状態を new / playing / cleared で表示します。</li>
+    <li>進捗表示を Easy / Normal / Hard / Total に整理しました。</li>
+    <li>操作ボタンを2段に整理しました。</li>
+  </ul>
 
   <h2>レビュー項目</h2>
   <ul>
-    <li>Easy、Normal、Hard がそれぞれ 20 問ありますか？</li>
-    <li>Total が 60 問になっていますか？</li>
-    <li>Home に Easy / Normal / Hard / Total / Completion が表示されていますか？</li>
-    <li>問題一覧に 001 から 020 と状態が表示されていますか？</li>
-    <li>途中入力後、状態が playing になりますか？</li>
-    <li>完成確認で cleared になりますか？</li>
-    <li>続きボタンで最後の playing 問題に戻れますか？</li>
-    <li>現在の問題だけリセットできますか？</li>
-    <li>全進捗リセットは確認ダイアログ付きですか？</li>
+    <li>難易度を Easy / Normal / Hard で選べますか？</li>
+    <li>問題番号を 001 から 020 で選べますか？</li>
+    <li>選択中の問題状態が分かりますか？</li>
+    <li>続きからボタンの意味が分かりやすいですか？</li>
+    <li>Hint 2 / Hint 3 が消えていますか？</li>
+    <li>盤面が大きいまま保たれていますか？</li>
   </ul>
 
   <h2>検証コマンド</h2>
@@ -57,7 +58,7 @@ node --check puzzles.js
 node --check service-worker.js
 node verify-static.js</code></pre>
 
-  <h2>既知の制限</h2>
-  <p>メモ、タイマー、問題生成、広告、バックエンド、アカウントはありません。問題は固定の静的データです。</p>
+  <h2>制限</h2>
+  <p>新しい問題、メモ、タイマー、問題生成、広告、バックエンド、アカウントは追加していません。</p>
 </body>
 </html>

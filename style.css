@@ -150,7 +150,7 @@ select {
 
 .home-panel {
   display: grid;
-  gap: 4px;
+  gap: 5px;
   padding: 5px;
   border: 1px solid rgba(6, 22, 36, 0.14);
   border-radius: 7px;
@@ -159,7 +159,7 @@ select {
 
 .progress-summary {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 3px;
   color: var(--ink);
   font-size: 0.66rem;
@@ -178,69 +178,28 @@ select {
   white-space: nowrap;
 }
 
-.home-actions {
+.pickers {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 5px;
 }
 
-.home-actions button {
-  min-height: 28px;
-  font-size: 0.74rem;
-  font-weight: 800;
-}
-
-.puzzle-list {
-  max-height: 78px;
-  overflow: auto;
+.pickers label {
   display: grid;
-  gap: 4px;
-  overscroll-behavior: contain;
+  gap: 2px;
 }
 
-.puzzle-group {
-  display: grid;
-  grid-template-columns: 42px repeat(5, minmax(0, 1fr));
-  gap: 3px;
-  align-items: center;
-}
-
-.puzzle-group strong {
+.pickers span {
   color: var(--muted);
   font-size: 0.66rem;
-  line-height: 1;
-}
-
-.puzzle-chip {
-  min-height: 24px;
-  padding: 0 2px;
-  overflow: hidden;
-  border: 1px solid #bcc8c3;
-  color: var(--ink);
-  background: #f6f7f6;
-  box-shadow: none;
-  font-size: 0.62rem;
   font-weight: 800;
   line-height: 1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.puzzle-chip.playing {
-  color: #001b52;
-  background: #ffe100;
-  border-color: #9c7100;
-}
-
-.puzzle-chip.cleared {
-  color: #fff;
-  background: #0a7a31;
-  border-color: #064e20;
-}
-
-.puzzle-chip.not_started {
-  color: #46504c;
-  background: #edf0ee;
+.pickers select {
+  width: 100%;
+  max-width: none;
+  min-height: 32px;
 }
 
 .status-panel p {
@@ -402,6 +361,31 @@ select {
   background: var(--cell-line);
 }
 
+.status-badge {
+  min-width: 78px;
+  padding: 7px 8px;
+  border: 2px solid #bcc8c3;
+  border-radius: 7px;
+  color: #46504c;
+  background: #edf0ee;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+}
+
+.status-badge.playing {
+  color: #001b52;
+  background: #ffe100;
+  border-color: #9c7100;
+}
+
+.status-badge.cleared {
+  color: #fff;
+  background: #0a7a31;
+  border-color: #064e20;
+}
+
 .controls {
   grid-template-columns: minmax(0, 1fr) 46px;
 }
@@ -469,12 +453,9 @@ select {
     font-size: 0.72rem;
   }
 
-  .progress-summary {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .puzzle-group {
-    grid-template-columns: 38px repeat(4, minmax(0, 1fr));
+  .progress-summary,
+  .pickers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -486,10 +467,6 @@ select {
   .status-panel {
     min-height: 24px;
     padding-block: 2px;
-  }
-
-  .puzzle-list {
-    max-height: 52px;
   }
 
   .board {

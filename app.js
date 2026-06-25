@@ -1,22 +1,21 @@
 (function () {
   "use strict";
 
-  const VERSION = "v1.0";
+  const VERSION = "v1.1";
   const puzzles = window.SUDOKU_PUZZLES || [];
   const boardEl = document.getElementById("board");
   const numberPadEl = document.getElementById("numberPad");
-  const puzzleSelectEl = document.getElementById("puzzleSelect");
+  const difficultySelectEl = document.getElementById("difficultySelect");
+  const puzzleNumberSelectEl = document.getElementById("puzzleNumberSelect");
+  const selectedStatusEl = document.getElementById("selectedStatus");
   const messageEl = document.getElementById("message");
   const progressSummaryEl = document.getElementById("progressSummary");
-  const puzzleListEl = document.getElementById("puzzleList");
   const continuePuzzleBtn = document.getElementById("continuePuzzle");
   const resetAllProgressBtn = document.getElementById("resetAllProgress");
   const clearCellBtn = document.getElementById("clearCell");
   const checkMistakesBtn = document.getElementById("checkMistakes");
   const checkCompleteBtn = document.getElementById("checkComplete");
   const hintOneBtn = document.getElementById("hintOne");
-  const hintTwoBtn = document.getElementById("hintTwo");
-  const hintThreeBtn = document.getElementById("hintThree");
   const resetPuzzleBtn = document.getElementById("resetPuzzle");
 
   let currentPuzzle = puzzles[0];
@@ -38,11 +37,30 @@
   }
 
   function oldBoardKeys(puzzleId) {
-    return ["v0.6", "v0.5", "v0.4", "v0.3", "v0.2", "v0.1"].map((version) => `sudoku-factory:${version}:${puzzleId}`);
+    return ["v1.0", "v0.6", "v0.5", "v0.4", "v0.3", "v0.2", "v0.1"].flatMap((version) => [
+      `sudoku-factory:${version}:board:${puzzleId}`,
+      `sudoku-factory:${version}:${puzzleId}`
+    ]);
+  }
+
+  function oldStateKeys(puzzleId) {
+    return ["v1.0"].map((version) => `sudoku-factory:${version}:state:${puzzleId}`);
   }
 
   function setMessage(text) {
     messageEl.textContent = text;
+  }
+
+  function difficultyLabel(difficulty) {
+    return { easy: "Easy", normal: "Normal", hard: "Hard" }[difficulty] || difficulty;
+  }
+
+  function puzzleNumber(puzzle) {
+    return puzzle.id.split("-")[1] || puzzle.id;
+  }
+
+  function stateLabel(state) {
+    return { not_started: "new", playing: "playing", cleared: "cleared" }[state] || "new";
   }
 
   function savedBoardFor(puzzle) {
@@ -61,8 +79,14 @@
 
   function getPuzzleState(puzzle) {
     const explicit = localStorage.getItem(stateKey(puzzle.id));
-    if (explicit === "cleared") {
-      return "cleared";
+    if (explicit === "cleared" || explicit === "playing") {
+      return explicit;
+    }
+    for (const key of oldStateKeys(puzzle.id)) {
+      const old = localStorage.getItem(key);
+      if (old === "cleared" || old === "playing") {
+        return old;
+      }
     }
     const saved = savedBoardFor(puzzle);
     if (saved && saved !== puzzle.givens) {
@@ -106,6 +130,7 @@
     localStorage.removeItem(boardKey(puzzle.id));
     localStorage.removeItem(stateKey(puzzle.id));
     oldBoardKeys(puzzle.id).forEach((key) => localStorage.removeItem(key));
+    oldStateKeys(puzzle.id).forEach((key) => localStorage.removeItem(key));
   }
 
   function isFixed(index) {
@@ -134,14 +159,6 @@
     return counts;
   }
 
-  function difficultyLabel(difficulty) {
-    return { easy: "Easy", normal: "Normal", hard: "Hard" }[difficulty] || difficulty;
-  }
-
-  function puzzleNumber(puzzle) {
-    return puzzle.id.split("-")[1] || puzzle.id;
-  }
-
   function progressStats() {
     const stats = {
       easy: { cleared: 0, total: 0 },
@@ -159,41 +176,8 @@
     return stats;
   }
 
-  function renderHome() {
-    const stats = progressStats();
-    const percent = stats.total.total === 0 ? 0 : Math.round((stats.total.cleared / stats.total.total) * 100);
-    progressSummaryEl.innerHTML = `
-      <span>Easy ${stats.easy.cleared} / ${stats.easy.total}</span>
-      <span>Normal ${stats.normal.cleared} / ${stats.normal.total}</span>
-      <span>Hard ${stats.hard.cleared} / ${stats.hard.total}</span>
-      <span>Total ${stats.total.cleared} / ${stats.total.total}</span>
-      <strong>Completion ${percent}%</strong>
-    `;
-
-    puzzleListEl.innerHTML = "";
-    ["easy", "normal", "hard"].forEach((difficulty) => {
-      const group = document.createElement("div");
-      group.className = "puzzle-group";
-      const heading = document.createElement("strong");
-      heading.textContent = difficultyLabel(difficulty);
-      group.appendChild(heading);
-      puzzles.filter((puzzle) => puzzle.difficulty === difficulty).forEach((puzzle) => {
-        const button = document.createElement("button");
-        const state = getPuzzleState(puzzle);
-        button.type = "button";
-        button.className = `puzzle-chip ${state}`;
-        button.textContent = `${puzzleNumber(puzzle)} ${state}`;
-        button.addEventListener("click", () => switchPuzzle(puzzle.id));
-        group.appendChild(button);
-      });
-      puzzleListEl.appendChild(group);
-    });
-
-    continuePuzzleBtn.disabled = !findContinuePuzzle();
-  }
-
   function findContinuePuzzle() {
-    const last = localStorage.getItem(lastKey());
+    const last = localStorage.getItem(lastKey()) || localStorage.getItem("sudoku-factory:v1.0:last-playing");
     if (last) {
       const lastPuzzle = puzzles.find((puzzle) => puzzle.id === last && getPuzzleState(puzzle) === "playing");
       if (lastPuzzle) {
@@ -201,6 +185,46 @@
       }
     }
     return puzzles.find((puzzle) => getPuzzleState(puzzle) === "playing");
+  }
+
+  function renderHome() {
+    const stats = progressStats();
+    progressSummaryEl.innerHTML = `
+      <span>Easy ${stats.easy.cleared}/${stats.easy.total}</span>
+      <span>Normal ${stats.normal.cleared}/${stats.normal.total}</span>
+      <span>Hard ${stats.hard.cleared}/${stats.hard.total}</span>
+      <strong>Total ${stats.total.cleared}/${stats.total.total}</strong>
+    `;
+    selectedStatusEl.textContent = stateLabel(getPuzzleState(currentPuzzle));
+    selectedStatusEl.className = `status-badge ${getPuzzleState(currentPuzzle)}`;
+    continuePuzzleBtn.disabled = !findContinuePuzzle();
+  }
+
+  function renderDifficultySelect() {
+    difficultySelectEl.innerHTML = "";
+    ["easy", "normal", "hard"].forEach((difficulty) => {
+      const option = document.createElement("option");
+      option.value = difficulty;
+      option.textContent = difficultyLabel(difficulty);
+      difficultySelectEl.appendChild(option);
+    });
+  }
+
+  function renderPuzzleNumberSelect() {
+    const difficulty = difficultySelectEl.value || "easy";
+    puzzleNumberSelectEl.innerHTML = "";
+    puzzles.filter((puzzle) => puzzle.difficulty === difficulty).forEach((puzzle) => {
+      const option = document.createElement("option");
+      option.value = puzzle.id;
+      option.textContent = `${puzzleNumber(puzzle)} ${stateLabel(getPuzzleState(puzzle))}`;
+      puzzleNumberSelectEl.appendChild(option);
+    });
+  }
+
+  function syncSelectors() {
+    difficultySelectEl.value = currentPuzzle.difficulty;
+    renderPuzzleNumberSelect();
+    puzzleNumberSelectEl.value = currentPuzzle.id;
   }
 
   function applyHighlightClasses(cell, index, value) {
@@ -278,16 +302,8 @@
     renderBoard();
     renderNumberPad();
     renderHome();
-  }
-
-  function renderPuzzleSelect() {
-    puzzleSelectEl.innerHTML = "";
-    puzzles.forEach((puzzle) => {
-      const option = document.createElement("option");
-      option.value = puzzle.id;
-      option.textContent = `${difficultyLabel(puzzle.difficulty)} ${puzzleNumber(puzzle)}`;
-      puzzleSelectEl.appendChild(option);
-    });
+    renderPuzzleNumberSelect();
+    puzzleNumberSelectEl.value = currentPuzzle.id;
   }
 
   function selectCell(index) {
@@ -352,7 +368,7 @@
       wrongIndexes = new Set();
       markCleared();
       renderAll();
-      setMessage("クリア！Ver1.0");
+      setMessage("クリア！Ver1.1");
       return;
     }
     checkMistakes();
@@ -363,7 +379,7 @@
     }
   }
 
-  function revealHints(count) {
+  function revealHint() {
     const emptyIndexes = board
       .map((value, index) => (value === "0" && !isFixed(index) ? index : -1))
       .filter((index) => index >= 0);
@@ -371,16 +387,13 @@
       setMessage("空きマスがありません");
       return;
     }
-    const shuffled = emptyIndexes.sort(() => Math.random() - 0.5);
-    const picked = shuffled.slice(0, count);
-    revealedIndexes = new Set(picked);
-    picked.forEach((index) => {
-      board[index] = currentPuzzle.solution[index];
-      wrongIndexes.delete(index);
-    });
+    const index = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
+    revealedIndexes = new Set([index]);
+    board[index] = currentPuzzle.solution[index];
+    wrongIndexes.delete(index);
     saveProgress(true);
     renderAll();
-    setMessage(`${picked.length} 個ヒント`);
+    setMessage("ヒントを1つ入れました");
   }
 
   function resetPuzzle() {
@@ -399,6 +412,7 @@
     }
     puzzles.forEach(clearProgressForPuzzle);
     localStorage.removeItem(lastKey());
+    localStorage.removeItem("sudoku-factory:v1.0:last-playing");
     board = currentPuzzle.givens.split("");
     selectedIndex = -1;
     wrongIndexes = new Set();
@@ -413,11 +427,11 @@
       return;
     }
     currentPuzzle = nextPuzzle;
-    puzzleSelectEl.value = currentPuzzle.id;
     selectedIndex = -1;
     wrongIndexes = new Set();
     revealedIndexes = new Set();
     loadProgress(currentPuzzle);
+    syncSelectors();
     renderAll();
     setMessage(`${difficultyLabel(currentPuzzle.difficulty)} ${puzzleNumber(currentPuzzle)} を開始`);
   }
@@ -444,17 +458,19 @@
       setMessage("問題データがありません");
       return;
     }
-    renderPuzzleSelect();
+    renderDifficultySelect();
     switchPuzzle(puzzles[0].id);
-    puzzleSelectEl.addEventListener("change", (event) => switchPuzzle(event.target.value));
+    difficultySelectEl.addEventListener("change", () => {
+      renderPuzzleNumberSelect();
+      switchPuzzle(puzzleNumberSelectEl.value);
+    });
+    puzzleNumberSelectEl.addEventListener("change", (event) => switchPuzzle(event.target.value));
     continuePuzzleBtn.addEventListener("click", continuePuzzle);
     resetAllProgressBtn.addEventListener("click", resetAllProgress);
     clearCellBtn.addEventListener("click", clearSelectedCell);
     checkMistakesBtn.addEventListener("click", checkMistakes);
     checkCompleteBtn.addEventListener("click", checkComplete);
-    hintOneBtn.addEventListener("click", () => revealHints(1));
-    hintTwoBtn.addEventListener("click", () => revealHints(2));
-    hintThreeBtn.addEventListener("click", () => revealHints(3));
+    hintOneBtn.addEventListener("click", revealHint);
     resetPuzzleBtn.addEventListener("click", resetPuzzle);
     registerServiceWorker();
   }
