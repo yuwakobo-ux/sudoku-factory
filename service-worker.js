@@ -1,12 +1,12 @@
 "use strict";
 
-const CACHE_NAME = "sudoku-factory-ver1-1";
+const CACHE_NAME = "sudoku-factory-ver1-1-1";
 const APP_FILES = [
   "./",
   "./index.html",
-  "./style.css",
-  "./app.js",
-  "./puzzles.js",
+  "./style.css?v=1.1.1",
+  "./app.js?v=1.1.1",
+  "./puzzles.js?v=1.1.1",
   "./manifest.webmanifest",
   "./OPEN_ME_FIRST.html"
 ];
@@ -27,6 +27,17 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") {
+    return;
+  }
+
+  if (event.request.mode === "navigate" || event.request.destination === "document") {
+    event.respondWith(
+      fetch(event.request).then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        return response;
+      }).catch(() => caches.match(event.request).then((cached) => cached || caches.match("./index.html")))
+    );
     return;
   }
 

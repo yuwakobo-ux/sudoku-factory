@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "v1.1";
+  const VERSION = "v1.1.1";
   const puzzles = window.SUDOKU_PUZZLES || [];
   const boardEl = document.getElementById("board");
   const numberPadEl = document.getElementById("numberPad");
@@ -37,14 +37,16 @@
   }
 
   function oldBoardKeys(puzzleId) {
-    return ["v1.0", "v0.6", "v0.5", "v0.4", "v0.3", "v0.2", "v0.1"].flatMap((version) => [
-      `sudoku-factory:${version}:board:${puzzleId}`,
-      `sudoku-factory:${version}:${puzzleId}`
-    ]);
+    const keys = [];
+    ["v1.1", "v1.0", "v0.6", "v0.5", "v0.4", "v0.3", "v0.2", "v0.1"].forEach((version) => {
+      keys.push(`sudoku-factory:${version}:board:${puzzleId}`);
+      keys.push(`sudoku-factory:${version}:${puzzleId}`);
+    });
+    return keys;
   }
 
   function oldStateKeys(puzzleId) {
-    return ["v1.0"].map((version) => `sudoku-factory:${version}:state:${puzzleId}`);
+    return ["v1.1", "v1.0"].map((version) => `sudoku-factory:${version}:state:${puzzleId}`);
   }
 
   function setMessage(text) {
@@ -177,7 +179,9 @@
   }
 
   function findContinuePuzzle() {
-    const last = localStorage.getItem(lastKey()) || localStorage.getItem("sudoku-factory:v1.0:last-playing");
+    const last = localStorage.getItem(lastKey()) ||
+      localStorage.getItem("sudoku-factory:v1.1:last-playing") ||
+      localStorage.getItem("sudoku-factory:v1.0:last-playing");
     if (last) {
       const lastPuzzle = puzzles.find((puzzle) => puzzle.id === last && getPuzzleState(puzzle) === "playing");
       if (lastPuzzle) {
@@ -368,7 +372,7 @@
       wrongIndexes = new Set();
       markCleared();
       renderAll();
-      setMessage("クリア！Ver1.1");
+      setMessage("クリア！Ver1.1.1");
       return;
     }
     checkMistakes();
@@ -412,6 +416,7 @@
     }
     puzzles.forEach(clearProgressForPuzzle);
     localStorage.removeItem(lastKey());
+    localStorage.removeItem("sudoku-factory:v1.1:last-playing");
     localStorage.removeItem("sudoku-factory:v1.0:last-playing");
     board = currentPuzzle.givens.split("");
     selectedIndex = -1;

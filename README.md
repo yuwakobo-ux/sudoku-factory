@@ -1,6 +1,15 @@
 # Sudoku Factory
 
-Sudoku Factory / ナンプレ工場 Ver1.1 is a static smartphone Sudoku PWA.
+Sudoku Factory / ナンプレ工場 Ver1.1.1 is a static smartphone Sudoku PWA.
+
+## Ver1.1.1 Hotfix
+
+- Fixes a smartphone black-board failure caused by cached/mismatched Ver1.1 assets.
+- Adds cache-busted CSS/JS/puzzle URLs.
+- Updates the service worker cache to `sudoku-factory-ver1-1-1`.
+- Uses network-first loading for HTML documents so updates are less likely to be hidden by the old cache.
+- Removes `Array.flatMap` from the progress migration path for wider mobile browser compatibility.
+- Keeps one Hint button, 60 puzzles, progress saving, current reset, and all-progress reset.
 
 ## Ver1.1 Summary
 

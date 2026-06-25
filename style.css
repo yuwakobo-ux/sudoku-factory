@@ -229,7 +229,7 @@ select {
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
   border: 3px solid var(--heavy);
-  background: var(--heavy);
+  background: var(--panel);
 }
 
 .cell {
@@ -359,6 +359,10 @@ select {
 
 .legend-related {
   background: var(--cell-line);
+}
+
+.legacy-cache-bridge {
+  display: none !important;
 }
 
 .status-badge {

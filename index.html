@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0057d8">
-  <title>ナンプレ工場 Ver1.1</title>
+  <title>ナンプレ工場 Ver1.1.1</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=1.1.1">
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand">
-        <p class="eyebrow">Sudoku Factory Ver1.1</p>
+        <p class="eyebrow">Sudoku Factory Ver1.1.1</p>
         <h1>ナンプレ工場</h1>
       </div>
       <div class="status-badge" id="selectedStatus">new</div>
@@ -53,9 +53,16 @@
       <button id="resetAllProgress" class="danger" type="button">全リセット</button>
       <button id="continuePuzzle" type="button">続きから</button>
     </section>
+
+    <div class="legacy-cache-bridge" aria-hidden="true">
+      <select id="puzzleSelect" tabindex="-1"></select>
+      <div id="puzzleList"></div>
+      <button id="hintTwo" type="button" tabindex="-1">Hint 2</button>
+      <button id="hintThree" type="button" tabindex="-1">Hint 3</button>
+    </div>
   </main>
 
-  <script src="puzzles.js"></script>
-  <script src="app.js"></script>
+  <script src="puzzles.js?v=1.1.1"></script>
+  <script src="app.js?v=1.1.1"></script>
 </body>
 </html>
