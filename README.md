@@ -1,25 +1,25 @@
 # Sudoku Factory
 
-Sudoku Factory / ナンプレ工場 Ver.0.4 is an ad-free, smartphone-friendly Sudoku PWA built with static HTML, CSS, and JavaScript.
+Sudoku Factory / ナンプレ工場 Ver.0.5 is an ad-free, smartphone-friendly Sudoku PWA built with static HTML, CSS, and JavaScript.
 
-## Ver.0.4 Notes
+## Ver.0.5 Notes
 
-Ver.0.4 is a professional smartphone UI polish release. It does not add gameplay features; it makes the existing board easier to read during actual play.
+Ver.0.5 is a high-contrast visual redesign. It does not add gameplay features; it makes the existing highlights obvious on a real smartphone screen.
 
-## Highlight System
+## High-Contrast Highlight System
 
-- Wrong cells: strongest warning state with red fill, dark red border, and dark red text.
-- Selected cell: strongest normal focus state with dark green fill, thick border, shadow, and slight scale.
-- Same number: warm yellow fill with an inner accent.
-- Same row and column: pale blue fill.
-- Same 3x3 block: pale green-neutral fill.
+- Selected cell: strong blue fill, thick dark border, visible outline, shadow, and slight scale.
+- Same number: clear yellow fill with an inner accent ring.
+- Row and column: light blue fill.
+- 3x3 block: light green fill.
+- Wrong cells: strong red/pink fill with dark red border and red text.
 - Fixed givens: black, bold text.
-- User-entered numbers: blue-teal text with normal weight.
-- Normal cells: warm white background.
+- User-entered numbers: clear blue text, visually different from fixed givens.
+- Compact legend: shows 選択中, 同じ数字, and 関連マス when screen height allows.
 
 ## Number Pad
 
-- The number matching the selected cell is strongly highlighted.
+- The number matching the selected cell is strongly highlighted in yellow.
 - Numbers that already appear 9 times are muted as completed.
 - Completed numbers remain tappable for usability.
 
@@ -36,7 +36,7 @@ Ver.0.4 is a professional smartphone UI polish release. It does not add gameplay
 ## File Structure
 
 - `index.html` - main app screen
-- `style.css` - compact smartphone layout and Ver.0.4 visual hierarchy
+- `style.css` - compact smartphone layout and Ver.0.5 high-contrast highlight system
 - `app.js` - game interaction, saving, checks, hints, reset, highlights, number-pad feedback, service worker registration
 - `puzzles.js` - three fixed puzzles
 - `manifest.webmanifest` - PWA manifest
@@ -64,13 +64,13 @@ https://yuwakobo-ux.github.io/sudoku-factory/
 
 ## Known Limitations
 
-- Ver.0.4 still uses only three fixed puzzles.
+- Ver.0.5 still uses only three fixed puzzles.
 - There is no notes mode, timer, puzzle generator, account system, backend, or ads.
 - Hints reveal correct values immediately and do not track a score.
-- Very small phone screens may still need slight scrolling depending on browser toolbar height.
+- Very small phone screens hide the legend and may still need slight scrolling depending on browser toolbar height.
 
 ## Roadmap
 
-- Test Ver.0.4 on real iPhone and Android screens.
-- Tune color intensity only if any state still feels ambiguous.
+- Compare Ver.0.5 screenshots against Ver.0.4 on a real iPhone.
+- Tune only color intensity if any state still feels unclear.
 - Add more curated puzzles later.

@@ -21,7 +21,7 @@
   let revealedIndexes = new Set();
 
   function storageKey(puzzleId) {
-    return `sudoku-factory:v0.4:${puzzleId}`;
+    return `sudoku-factory:v0.5:${puzzleId}`;
   }
 
   function setMessage(text) {
@@ -29,11 +29,12 @@
   }
 
   function loadProgress(puzzle) {
-    const savedV4 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV5 = localStorage.getItem(storageKey(puzzle.id));
+    const savedV4 = localStorage.getItem(`sudoku-factory:v0.4:${puzzle.id}`);
     const savedV3 = localStorage.getItem(`sudoku-factory:v0.3:${puzzle.id}`);
     const savedV2 = localStorage.getItem(`sudoku-factory:v0.2:${puzzle.id}`);
     const savedV1 = localStorage.getItem(`sudoku-factory:v0.1:${puzzle.id}`);
-    const saved = savedV4 || savedV3 || savedV2 || savedV1;
+    const saved = savedV5 || savedV4 || savedV3 || savedV2 || savedV1;
     if (saved && saved.length === 81) {
       board = saved.split("");
       for (let i = 0; i < 81; i += 1) {
@@ -225,7 +226,7 @@
     if (board.join("") === currentPuzzle.solution) {
       wrongIndexes = new Set();
       renderAll();
-      setMessage("クリア！Ver.0.4 完成");
+      setMessage("クリア！Ver.0.5 完成");
       return;
     }
     checkMistakes();

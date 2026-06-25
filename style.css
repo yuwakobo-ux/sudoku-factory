@@ -3,28 +3,30 @@
   --muted: #55615e;
   --paper: #fbfaf6;
   --panel: #ffffff;
-  --line: #8c9a95;
-  --heavy: #203b37;
-  --accent: #2e756d;
-  --accent-strong: #245b54;
-  --soft: #dceee9;
+  --line: #6f7f7a;
+  --heavy: #132927;
+  --accent: #075f77;
+  --accent-strong: #033d50;
+  --soft: #d9edf2;
 
-  /* Ver.0.4 color roles: block < row/column < same number < selected < wrong. */
-  --cell-normal: #fffdf7;
-  --cell-fixed: #ecefec;
-  --cell-block: #ddefdd;
-  --cell-line: #cfe7ff;
-  --cell-same: #ffe476;
-  --cell-selected: #176a62;
-  --cell-wrong: #ff8f85;
-  --cell-wrong-text: #7c120d;
-  --cell-user-text: #0a6f97;
-  --cell-fixed-text: #050706;
+  /* Ver.0.5 high-contrast roles: block < row/column < same number < selected < wrong. */
+  --cell-normal: #fffefa;
+  --cell-fixed: #f0f1f0;
+  --cell-block: #caedc8;
+  --cell-line: #b8ddff;
+  --cell-same: #ffd928;
+  --cell-selected: #0077b6;
+  --cell-selected-border: #002b4d;
+  --cell-wrong: #ff5a5f;
+  --cell-wrong-border: #8f0000;
+  --cell-wrong-text: #610000;
+  --cell-user-text: #0057b8;
+  --cell-fixed-text: #000000;
 
-  --pad-active: #ffcf24;
+  --pad-active: #ffcc00;
   --pad-active-text: #17201f;
-  --pad-complete: #d9dfdc;
-  --pad-complete-text: #59615e;
+  --pad-complete: #d1d6d3;
+  --pad-complete-text: #424946;
 }
 
 * {
@@ -80,7 +82,7 @@ button.danger {
   min-height: 100dvh;
   display: grid;
   grid-template-rows: auto auto auto auto auto;
-  gap: 6px;
+  gap: 5px;
   margin: 0 auto;
   padding: max(6px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
 }
@@ -156,11 +158,12 @@ select {
 .board-wrap {
   display: grid;
   place-items: center;
+  gap: 3px;
   min-height: 0;
 }
 
 .board {
-  width: min(100%, calc(100dvh - 196px), 540px);
+  width: min(100%, calc(100dvh - 211px), 540px);
   min-width: 292px;
   aspect-ratio: 1;
   display: grid;
@@ -206,42 +209,47 @@ select {
   font-weight: 950;
 }
 
+/* block */
 .cell.block-peer {
   background: var(--cell-block);
 }
 
+/* row column */
 .cell.line-peer {
   background: var(--cell-line);
 }
 
+/* same number */
 .cell.same-number {
   background: var(--cell-same);
-  box-shadow: inset 0 0 0 2px #e0a400;
+  box-shadow: inset 0 0 0 3px #b88100;
 }
 
+/* selected cell */
 .cell.selected {
   position: relative;
   z-index: 1;
   color: #fff;
   background: var(--cell-selected);
-  outline: 5px solid #062f2b;
-  outline-offset: -6px;
-  transform: scale(1.045);
-  box-shadow: 0 0 0 3px rgba(6, 47, 43, 0.34), 0 4px 12px rgba(6, 47, 43, 0.38);
+  outline: 6px solid var(--cell-selected-border);
+  outline-offset: -7px;
+  transform: scale(1.055);
+  box-shadow: 0 0 0 4px rgba(0, 43, 77, 0.45), 0 6px 16px rgba(0, 43, 77, 0.55);
 }
 
+/* wrong */
 .cell.wrong {
   color: var(--cell-wrong-text);
   background: var(--cell-wrong);
   font-weight: 900;
-  box-shadow: inset 0 0 0 4px #b3130b;
+  box-shadow: inset 0 0 0 5px var(--cell-wrong-border);
 }
 
 .cell.wrong.selected {
   color: #fff;
-  background: #b3130b;
-  outline-color: #5f0804;
-  box-shadow: 0 0 0 3px rgba(95, 8, 4, 0.36), 0 4px 12px rgba(95, 8, 4, 0.38);
+  background: var(--cell-wrong-border);
+  outline-color: #4c0000;
+  box-shadow: 0 0 0 4px rgba(76, 0, 0, 0.44), 0 6px 16px rgba(76, 0, 0, 0.55);
 }
 
 .cell.revealed {
@@ -252,6 +260,46 @@ select {
 .actions {
   display: grid;
   gap: 5px;
+}
+
+.legend {
+  width: min(100%, 540px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  line-height: 1;
+}
+
+.legend span {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.legend i {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border: 1px solid var(--heavy);
+  border-radius: 3px;
+}
+
+.legend-selected {
+  background: var(--cell-selected);
+}
+
+.legend-same {
+  background: var(--cell-same);
+}
+
+.legend-related {
+  background: var(--cell-line);
 }
 
 .controls {
@@ -276,7 +324,7 @@ select {
   color: var(--pad-active-text);
   background: var(--pad-active);
   transform: translateY(-1px);
-  box-shadow: 0 0 0 3px rgba(255, 207, 36, 0.42), 0 3px 0 #ad8200;
+  box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.55), 0 3px 0 #946c00;
 }
 
 .number-pad button.completed-number {
@@ -288,7 +336,7 @@ select {
 .number-pad button.active-number.completed-number {
   color: var(--pad-active-text);
   background: var(--pad-active);
-  box-shadow: 0 0 0 3px rgba(255, 207, 36, 0.42), 0 3px 0 #ad8200;
+  box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.55), 0 3px 0 #946c00;
 }
 
 .actions {
@@ -311,7 +359,7 @@ select {
 
   .board {
     min-width: 0;
-    width: min(100%, calc(100dvh - 184px));
+    width: min(100%, calc(100dvh - 199px));
   }
 
   .cell {
@@ -335,6 +383,10 @@ select {
 
   .board {
     width: min(100%, calc(100dvh - 166px), 520px);
+  }
+
+  .legend {
+    display: none;
   }
 
   button {
