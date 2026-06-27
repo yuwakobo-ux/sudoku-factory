@@ -30,34 +30,23 @@
 
   <h2>確認URL</h2>
   <p><a href="https://yuwakobo-ux.github.io/sudoku-factory/">https://yuwakobo-ux.github.io/sudoku-factory/</a></p>
-  <p>キャッシュが残る場合は <code>?v=ver1.1.1</code> を付けて開いてください。</p>
+  <p>スマートフォンで古いデータが残る場合は、次のキャッシュ回避URLで確認してください。</p>
+  <p><a href="https://yuwakobo-ux.github.io/sudoku-factory/?v=unique-puzzles-1">https://yuwakobo-ux.github.io/sudoku-factory/?v=unique-puzzles-1</a></p>
 
-  <h2>Hotfix確認</h2>
+  <h2>今回の最優先修正</h2>
   <ul>
-    <li>iPhone Chromeで黒い大きな四角だけにならず、9x9の盤面が表示されますか？</li>
-    <li>Difficulty と Puzzle の2つの選択欄が表示され、操作できますか？</li>
-    <li>Hint 2 / Hint 3 は表示されていませんか？</li>
-    <li>ミス確認、完成確認、ヒント、現在リセット、全リセット、続きからが表示されていますか？</li>
-  </ul>
-
-  <h2>変更点</h2>
-  <ul>
-    <li>Hint 2 と Hint 3 を削除しました。</li>
-    <li>ヒントは1つだけにしました。</li>
-    <li>Difficulty と Puzzle の2つの選択欄に分けました。</li>
-    <li>選択中の問題の状態を new / playing / cleared で表示します。</li>
-    <li>進捗表示を Easy / Normal / Hard / Total に整理しました。</li>
-    <li>操作ボタンを2段に整理しました。</li>
+    <li>複数解がある問題を出荷しないよう、60問すべてを差し替えました。</li>
+    <li>Easy 001 / Easy 002 を含め、全問題が「解が1つだけ」であることを検証しました。</li>
+    <li><code>verify-static.js</code> に一意解チェックを追加しました。</li>
+    <li>今後は、解が0個または2個以上の問題が1問でもあると verification failed になります。</li>
   </ul>
 
   <h2>レビュー項目</h2>
   <ul>
-    <li>難易度を Easy / Normal / Hard で選べますか？</li>
-    <li>問題番号を 001 から 020 で選べますか？</li>
-    <li>選択中の問題状態が分かりますか？</li>
-    <li>続きからボタンの意味が分かりやすいですか？</li>
-    <li>Hint 2 / Hint 3 が消えていますか？</li>
-    <li>盤面が大きいまま保たれていますか？</li>
+    <li>Easy 001 と Easy 002 を開いて、終盤で2通りに分岐しないこと。</li>
+    <li>Difficulty と Puzzle の選択が表示されること。</li>
+    <li>盤面、数字ボタン、ヒント、ミス確認、完成確認、リセットが今まで通り使えること。</li>
+    <li>進捗保存が今まで通り動くこと。</li>
   </ul>
 
   <h2>検証コマンド</h2>
@@ -66,7 +55,10 @@ node --check puzzles.js
 node --check service-worker.js
 node verify-static.js</code></pre>
 
-  <h2>制限</h2>
-  <p>新しい問題、メモ、タイマー、問題生成、広告、バックエンド、アカウントは追加していません。</p>
+  <h2>既知の制限</h2>
+  <p>メモ、タイマー、自動生成、広告、バックエンド、アカウント機能はありません。今回の修正ではゲーム機能やUIを追加せず、問題データの正しさを最優先しました。</p>
+
+  <h2>次のおすすめ作業</h2>
+  <p>実機で数問プレイし、Easy / Normal / Hard の体感難易度が適切か確認してください。</p>
 </body>
 </html>

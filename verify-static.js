@@ -79,6 +79,104 @@ function isValidCompletedSudoku(solution) {
   return true;
 }
 
+function countSolutions(givens, limit = 2) {
+  const cells = givens.split("").map((value) => (value === "0" ? 0 : Number(value)));
+  const rows = Array(9).fill(0);
+  const cols = Array(9).fill(0);
+  const boxes = Array(9).fill(0);
+
+  for (let index = 0; index < 81; index += 1) {
+    const value = cells[index];
+    if (!value) {
+      continue;
+    }
+    const row = Math.floor(index / 9);
+    const col = index % 9;
+    const box = Math.floor(row / 3) * 3 + Math.floor(col / 3);
+    const bit = 1 << value;
+    if ((rows[row] & bit) || (cols[col] & bit) || (boxes[box] & bit)) {
+      return 0;
+    }
+    rows[row] |= bit;
+    cols[col] |= bit;
+    boxes[box] |= bit;
+  }
+
+  let solutionCount = 0;
+
+  function solve() {
+    if (solutionCount >= limit) {
+      return;
+    }
+
+    let bestIndex = -1;
+    let bestMask = 0;
+    let bestOptionCount = 10;
+
+    for (let index = 0; index < 81; index += 1) {
+      if (cells[index]) {
+        continue;
+      }
+      const row = Math.floor(index / 9);
+      const col = index % 9;
+      const box = Math.floor(row / 3) * 3 + Math.floor(col / 3);
+      const used = rows[row] | cols[col] | boxes[box];
+      let mask = 0;
+      let optionCount = 0;
+
+      for (let value = 1; value <= 9; value += 1) {
+        const bit = 1 << value;
+        if (!(used & bit)) {
+          mask |= bit;
+          optionCount += 1;
+        }
+      }
+
+      if (optionCount === 0) {
+        return;
+      }
+      if (optionCount < bestOptionCount) {
+        bestIndex = index;
+        bestMask = mask;
+        bestOptionCount = optionCount;
+        if (optionCount === 1) {
+          break;
+        }
+      }
+    }
+
+    if (bestIndex === -1) {
+      solutionCount += 1;
+      return;
+    }
+
+    const row = Math.floor(bestIndex / 9);
+    const col = bestIndex % 9;
+    const box = Math.floor(row / 3) * 3 + Math.floor(col / 3);
+    for (let value = 1; value <= 9; value += 1) {
+      const bit = 1 << value;
+      if (!(bestMask & bit)) {
+        continue;
+      }
+      cells[bestIndex] = value;
+      rows[row] |= bit;
+      cols[col] |= bit;
+      boxes[box] |= bit;
+      solve();
+      rows[row] &= ~bit;
+      cols[col] &= ~bit;
+      boxes[box] &= ~bit;
+      cells[bestIndex] = 0;
+      if (solutionCount >= limit) {
+        return;
+      }
+    }
+  }
+
+  solve();
+  return solutionCount;
+}
+
 function assertPuzzleData(puzzles) {
   if (!Array.isArray(puzzles)) {
     fail("SUDOKU_PUZZLES must be an array.");
@@ -132,6 +230,12 @@ function assertPuzzleData(puzzles) {
         fail(`Given conflicts with solution in ${puzzle.id} at index ${index}.`);
       }
     }
+
+    const solutionCount = countSolutions(puzzle.givens, 2);
+    if (solutionCount !== 1) {
+      const result = solutionCount >= 2 ? "multiple solutions" : "zero solutions";
+      fail(`Puzzle ${puzzle.id} must have exactly one solution, found ${result}.`);
+    }
   }
 
   for (const difficulty of allowedDifficulties) {
@@ -143,4 +247,4 @@ function assertPuzzleData(puzzles) {
 
 assertRequiredFiles();
 assertPuzzleData(loadPuzzles());
-console.log("Static verification passed: 60 valid puzzles, unique ids, and 20 puzzles per difficulty.");
+console.log("Static verification passed: 60 valid uniquely solvable puzzles, unique ids, and 20 puzzles per difficulty.");

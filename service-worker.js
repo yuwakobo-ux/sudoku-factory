@@ -1,12 +1,12 @@
 "use strict";
 
-const CACHE_NAME = "sudoku-factory-ver1-1-1";
+const CACHE_NAME = "sudoku-factory-ver1-1-1-unique-puzzles";
 const APP_FILES = [
   "./",
   "./index.html",
   "./style.css?v=1.1.1",
   "./app.js?v=1.1.1",
-  "./puzzles.js?v=1.1.1",
+  "./puzzles.js?v=1.1.1u1",
   "./manifest.webmanifest",
   "./OPEN_ME_FIRST.html"
 ];
